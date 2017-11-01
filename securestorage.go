@@ -31,27 +31,22 @@ func expandUser(path string) (string, error) {
 	return strings.Replace(path, "~", usr.HomeDir, 1), nil
 }
 
-func NewSecureStorage(keyFile string, confDir string, configFile string) (*SecureStorage, error) {
-	vc, err := vconfig.New(configFile)
-	if err != nil {
-		return nil, err
-	}
-
+func NewSecureStorage(keyFile string, confDir string, config *vconfig.Section) (*SecureStorage, error) {
 	if keyFile == "" {
 		// to get private key folder from environment variable
-		keyDir, err := vc.GetSingleValue("", "KEY_DIR", "")
+		keyDir, err := config.GetSingleValue("KEY_DIR", "")
 		if err != nil {
 			return nil, err
 		}
 
 		// default private key folder. path inside home dir
-		defaultKeyDir, err := vc.GetSingleValue("", "DEFAULT_KEY_DIR", "")
+		defaultKeyDir, err := config.GetSingleValue("DEFAULT_KEY_DIR", "")
 		if err != nil {
 			return nil, err
 		}
 
 		// name of pem file
-		pemFile, err := vc.GetSingleValue("", "PEM_FILE", "")
+		pemFile, err := config.GetSingleValue("PEM_FILE", "")
 		if err != nil {
 			return nil, err
 		}
@@ -74,11 +69,11 @@ func NewSecureStorage(keyFile string, confDir string, configFile string) (*Secur
 	}
 
 	if confDir == "" {
-		confDirEnvName, err := vc.GetSingleValue("", "CONF_DIF", "")
+		confDirEnvName, err := config.GetSingleValue("CONF_DIF", "")
 		if err != nil {
 			return nil, err
 		}
-		defaultConfDir, err := vc.GetSingleValue("", "DEFAULT_CONF_DIF", "")
+		defaultConfDir, err := config.GetSingleValue("DEFAULT_CONF_DIF", "")
 		if err != nil {
 			return nil, err
 		}

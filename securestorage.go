@@ -34,7 +34,7 @@ func expandUser(path string) (string, error) {
 func NewSecureStorage(keyFile string, confDir string, config *vconfig.Section) (*SecureStorage, error) {
 	if keyFile == "" {
 		// to get private key folder from environment variable
-		keyDir, err := config.GetSingleValue("KEY_DIR", "")
+		keyDirEnvVar, err := config.GetSingleValue("KEY_DIR_ENV_VAR", "")
 		if err != nil {
 			return nil, err
 		}
@@ -52,7 +52,7 @@ func NewSecureStorage(keyFile string, confDir string, config *vconfig.Section) (
 		}
 
 		// gettng full path to pem file
-		envKeyDir, exists := os.LookupEnv(keyDir)
+		envKeyDir, exists := os.LookupEnv(keyDirEnvVar)
 		var privateKey string
 
 		if exists {
@@ -69,7 +69,7 @@ func NewSecureStorage(keyFile string, confDir string, config *vconfig.Section) (
 	}
 
 	if confDir == "" {
-		confDirEnvName, err := config.GetSingleValue("CONF_DIF", "")
+		confDirEnvVar, err := config.GetSingleValue("CONF_DIF_ENV_VAR", "")
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +77,7 @@ func NewSecureStorage(keyFile string, confDir string, config *vconfig.Section) (
 		if err != nil {
 			return nil, err
 		}
-		envConfDir, exists := os.LookupEnv(confDirEnvName)
+		envConfDir, exists := os.LookupEnv(confDirEnvVar)
 		if !exists {
 			envConfDir = defaultConfDir
 		}
